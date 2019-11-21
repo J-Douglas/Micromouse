@@ -40,13 +40,19 @@ long duration, distance, RightSensor,FrontSensor,LeftSensor;
 
 //constants
 #define runExtraInchConst 1000
+#define turnLeft 1000
+#define turnRight 1000
+#define turnBack 1000
 
-void setup() {
   int pLength = 0;
   int pIndex = 0;
   int mode = 0; 
   int wallDistance = 20; //distance from wall to robot
   int deviation = 5;
+  int status = 0;
+  char[] path = new char[40];
+
+void setup() {
 
   //Sensors Setup
   Serial.begin (9600);
@@ -73,30 +79,16 @@ void setup() {
 
 void loop() 
 {
-  /*
+ 
   mazeSolve(); // First pass to solve the maze
   //while (digitalRead(!buttonPin)) { } //just stops it until the you press the button to run the maze again
   pIndex = 0; //reset path index
   status = 0; //reset status 
   mazeOptimization(); // Second Pass: run the maze as fast as possible
   status = 1; //set status to finished*/
-   
-  brake('B', 1);
-  brake('B', 0);
-  brake('A', 1);
-  brake('A', 0);
-  
-  moveMotor('B', CW, 255);
-  moveMotor('A', CW, 255);
-
-  SonarSensor(trigPin1, echoPin1);
-  LeftSensor = distance;
-
-  Serial.print(LeftSensor);
-  Serial.print(" - ");
   
 }
-/*
+
 void mazeSolve(void)
 {
   unsigned int status = 0; // solving = 0; reach Maze End = 1
@@ -106,28 +98,21 @@ void mazeSolve(void)
         switch (mode)
         {   
           case GO_BACK:  
-            motorStop();
+            brake('A',1);
+            brake('B',1);
             goAndTurn (90);
-            recIntersection('B');
-            break;
-          
-          case END_MAZE: 
-            runExtraInch();
-            readLFSsensors();
-            if (mode != CONT_LINE) {goAndTurn (90); recIntersection('L');} // or it is a "T" or "Cross"). In both cases, goes to LEFT
-            else mazeEnd(); 
+            addPath('B');
             break;
             
          case RIGHT_TURN: 
             runExtraInch();
-            readLFSsensors();
-            if (mode == NO_LINE) {goAndTurn (270); recIntersection('R');}
-            else recIntersection('S');
+            goAndTurn (270); 
+            addPath('R');
             break;   
             
          case LEFT_TURN: 
             goAndTurn (90); 
-            recIntersection('L');
+            addPath('L');
             break;   
          
          case GO_STRAIGHT: 
@@ -137,7 +122,7 @@ void mazeSolve(void)
          }
     }
 }
-void goAndTurn(int direction, int degrees)
+void goAndTurn(int degrees)
 {
   if (degrees == 90)
   {
@@ -148,7 +133,7 @@ void goAndTurn(int direction, int degrees)
     
     moveMotor('B', CW, 255);
     moveMotor('A', CW, 255);
-    delay(turn);
+    delay(turnLeft);
     brake('B', 1);
     brake('A', 1);
   }
@@ -161,7 +146,7 @@ void goAndTurn(int direction, int degrees)
     
     moveMotor('B', CW, 255);
     moveMotor('A', CW, 255);
-    delay(runExtraInchConst);
+    delay(turnBack);
     brake('B', 1);
     brake('A', 1);
   }
@@ -174,12 +159,27 @@ void goAndTurn(int direction, int degrees)
     
     moveMotor('B', CW, 255);
     moveMotor('A', CW, 255);
-    delay(runExtraInchConst);
+    delay(turnRight);
     brake('B', 1);
     brake('A', 1);
   }
 }
 
+void goStraight(void)
+{
+  brake('B', 1);
+  brake('B', 0);
+  brake('A', 1);
+  brake('A', 0);
+  while (readSensors2() == 1)
+  {
+    moveMotor('B', CW, 255);
+    moveMotor('A', CW, 255);
+    delay(500);
+  }
+  brake('B', 1);
+  brake('A', 1);
+}
 void runExtraInch(void)
 {
   brake('B', 1);
@@ -216,8 +216,12 @@ void mazeTurn (char dir)
        break;
   }
 }
+/**
+ * add Path and simplify path is inspired by an online guide and modified to our needs
+ * 
+ * */
 //stores the path travelled and calls on simplify
-void recIntersection(char direction)
+void addPath(char direction)
 {
   path[pLength] = direction; // Store the intersection in the path variable.
   pLength++;
@@ -304,7 +308,22 @@ void mazeOptimization (void)
     }    
    }  
 }
-
+//check if path is straight
+int readSensors2(void)
+{
+  if (LeftSensor >= (wallDistance - deviation) && LeftSensor <= (wallDistance + deviation))
+  {
+    if (RightSensor >= (wallDistance - deviation) && RightSensor <= (wallDistance + deviation))
+    {
+      if (FrontSensor <= (wallDistance - deviation) && FrontSensor >= (wallDistance + deviation))
+      {
+        return 1;
+      }
+    }
+  }
+  return 0;
+}
+//check how car should turn
 int readSensors (void)
 {
   SonarSensor(trigPin1, echoPin1);
@@ -313,7 +332,6 @@ int readSensors (void)
   RightSensor = distance;
   SonarSensor(trigPin3, echoPin3);
   FrontSensor = distance;
-
   if (LeftSensor >= (wallDistance - deviation) && LeftSensor <= (wallDistance + deviation))
   {
     if (RightSensor >= (wallDistance - deviation) && RightSensor <= (wallDistance + deviation))
