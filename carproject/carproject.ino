@@ -44,7 +44,8 @@ long duration, distance, RightSensor,FrontSensor,LeftSensor;
   int wallDistance = 20; //distance from wall to robot
   int deviation = 5;
   int status = 0;
-  char path[40] = {0};
+  
+  char path[40] = {'0'};
 
 void setup() {
   //Sensors Setup
