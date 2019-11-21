@@ -1,15 +1,9 @@
-/*
-
-*/
-// marco sucks
-// Marco Polo
-// Testing 2 wassup
-// Testing
+//hi
 //modes to see which way the car should go
 #define GO_BACK 0
 #define END_MAZE 1
-#define RIGHT_TURN 2
-#define LEFT_TURN 3
+#define GO_RIGHT 2
+#define GO_LEFT 3
 #define GO_STRAIGHT 4
 
 //pins for sensors
@@ -50,10 +44,9 @@ long duration, distance, RightSensor,FrontSensor,LeftSensor;
   int wallDistance = 20; //distance from wall to robot
   int deviation = 5;
   int status = 0;
-  char[] path = new char[40];
+  char path[40] = {0};
 
 void setup() {
-
   //Sensors Setup
   Serial.begin (9600);
   pinMode(trigPin1, OUTPUT);
@@ -104,13 +97,13 @@ void mazeSolve(void)
             addPath('B');
             break;
             
-         case RIGHT_TURN: 
+         case GO_RIGHT: 
             runExtraInch();
             goAndTurn (270); 
             addPath('R');
             break;   
             
-         case LEFT_TURN: 
+         case GO_LEFT: 
             goAndTurn (90); 
             addPath('L');
             break;   
@@ -279,34 +272,7 @@ void simplifyPath()
 
 void mazeOptimization (void)
 {
-  while (!status)
-  {
-    mode = readSensors();  
-    switch (mode)
-    {
-      case GO_STRAIGHT:
-        followingLine();
-        break;    
-      case END_MAZE:
-        if (pIndex >= pLength) 
-        {
-          mazeEnd (); 
-        }
-        else 
-        {
-          mazeTurn (path[pIndex]); pIndex++;
-        }
-        break;  
-      case LEFT_TURN:
-        if (pIndex >= pLength) mazeEnd (); 
-        else {mazeTurn (path[pIndex]); pIndex++;}
-        break;  
-      case RIGHT_TURN:
-        if (pIndex >= pLength) mazeEnd (); 
-        else {mazeTurn (path[pIndex]); pIndex++;}
-        break;   
-    }    
-   }  
+   
 }
 //check if path is straight
 int readSensors2(void)
@@ -359,7 +325,6 @@ int readSensors (void)
     return GO_LEFT;
   }
 }
-*/
 void SonarSensor(int trigPin,int echoPin)
 {
   digitalWrite(trigPin, LOW);
