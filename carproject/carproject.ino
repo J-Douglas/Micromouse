@@ -80,12 +80,6 @@ void setup() {
 void loop() 
 {
 
-  Serial.print(LeftSensor);
-  Serial.print(" - ");
-  Serial.print(FrontSensor);
-  Serial.print(" - ");
-  Serial.println(RightSensor);
-
 //  buttonState = digitalRead(buttonPin);
 
 //  if (buttonState == HIGH && stage == 0) {
@@ -112,6 +106,11 @@ void mazeSolve(void)
   unsigned int status = 0; // solving = 0; reach Maze End = 1
     while (!status)
     {
+      Serial.print(LeftSensor);
+            Serial.print(" - ");
+            Serial.print(FrontSensor);
+            Serial.print(" - ");
+            Serial.println(RightSensor);
         mode = readSensors();  
         switch (mode)
         {   
@@ -123,13 +122,14 @@ void mazeSolve(void)
             break;
             
          case GO_RIGHT: 
-            runExtraInch();
             goAndTurn (270); 
+            runExtraInch();
             addPath('R');
             break;   
             
          case GO_LEFT: 
             goAndTurn (90); 
+            runExtraInch();
             addPath('L');
             break;   
          
@@ -157,8 +157,8 @@ void goAndTurn(int degrees)
     brake('A', 1);
     brake('A', 0);
     
-    moveMotor('B', CW, 255);
-    moveMotor('A', CCW, 255);
+    moveMotor('B', CCW, 255);
+    moveMotor('A', CW, 255);
     delay(turnLeft);
     brake('B', 1);
     brake('A', 1);
@@ -318,11 +318,17 @@ void mazeOptimization (void)
 //check if path is straight
 int readSensors2(void)
 {
-  if (LeftSensor >= (wallDistance - deviation) && LeftSensor <= (wallDistance + deviation))
+  SonarSensor(trigPin1, echoPin1);
+  LeftSensor = distance;
+  SonarSensor(trigPin2, echoPin2);
+  RightSensor = distance;
+  SonarSensor(trigPin3, echoPin3);
+  FrontSensor = distance;
+  if (LeftSensor >= 0 && LeftSensor <= (wallDistance + deviation))
   {
-    if (RightSensor >= (wallDistance - deviation) && RightSensor <= (wallDistance + deviation))
+    if (RightSensor >= 0 && RightSensor <= (wallDistance + deviation))
     {
-      if (FrontSensor <= (wallDistance - deviation) && FrontSensor >= (wallDistance + deviation))
+      if (FrontSensor <= 0 && FrontSensor >= (wallDistance + deviation))
       {
         return 1;
       }
@@ -339,21 +345,21 @@ int readSensors (void)
   RightSensor = distance;
   SonarSensor(trigPin3, echoPin3);
   FrontSensor = distance;
-  if (!(LeftSensor >= (wallDistance - deviation) && LeftSensor <= (wallDistance + deviation)))
+  if (!(LeftSensor >= 0 && LeftSensor <= (wallDistance + deviation)))
   {
-    if (!(RightSensor >= (wallDistance - deviation) && RightSensor <= (wallDistance + deviation)))
+    if (!(RightSensor >= 0 && RightSensor <= (wallDistance + deviation)))
     {
-      if (!(FrontSensor >= (wallDistance - deviation) && FrontSensor <= (wallDistance + deviation)))
+      if (!(FrontSensor >= 0 && FrontSensor <= (wallDistance + deviation)))
       {
         return FINISHED;
       }
     }
   }
-  if (LeftSensor >= (wallDistance - deviation) && LeftSensor <= (wallDistance + deviation))
+  if (LeftSensor >= 0 && LeftSensor <= (wallDistance + deviation))
   {
-    if (RightSensor >= (wallDistance - deviation) && RightSensor <= (wallDistance + deviation))
+    if (RightSensor >= 0 && RightSensor <= (wallDistance + deviation))
     {
-      if (FrontSensor >= (wallDistance - deviation) && FrontSensor <= (wallDistance + deviation))
+      if (FrontSensor >= 0 && FrontSensor <= (wallDistance + deviation))
       {
         return GO_BACK;
       }
@@ -362,7 +368,7 @@ int readSensors (void)
         return GO_STRAIGHT;
       }
     }
-    else if(FrontSensor>= (wallDistance - deviation) && FrontSensor <= (wallDistance + deviation))
+    else if(FrontSensor>= 0 && FrontSensor <= (wallDistance + deviation))
     {
       return GO_RIGHT;
     }
@@ -375,13 +381,19 @@ int readSensors (void)
   {
     return GO_LEFT;
   }
+  
+  Serial.print(LeftSensor);
+  Serial.print(" - ");
+  Serial.print(FrontSensor);
+  Serial.print(" - ");
+  Serial.println(RightSensor);
 }
 void SonarSensor(int trigPin,int echoPin)
 {
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
   digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
+  delayMicroseconds(2);
   digitalWrite(trigPin, LOW);
   duration = pulseIn(echoPin, HIGH);
   distance = (duration/2) / 29.1;
