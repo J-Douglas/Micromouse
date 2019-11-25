@@ -5,15 +5,14 @@
 #define GO_RIGHT 2
 #define GO_LEFT 3
 #define GO_STRAIGHT 4
-#define FINISHED 5
 
 //pins for sensors
-#define trigPin1 A1
+#define trigPin1 A1 // Left
 #define echoPin1 A2
-#define trigPin2 A3
+#define trigPin2 A3 // Center
 #define echoPin2 A4
-#define trigPin3 A5
-#define echoPin3 6
+#define trigPin3 A5 // Right
+#define echoPin3 8
 
 //pins for buttons
 #define buttonPin 1
@@ -49,6 +48,7 @@ long duration, distance, RightSensor,FrontSensor,LeftSensor;
   char path[40] = {'0'};
 
   int buttonState = 0;
+  int stage = 0;
 
 void setup() {
   //Sensors Setup
@@ -93,6 +93,10 @@ void loop()
     status = 1; //set status to finished*/
     stage += 1;
   }
+  if (buttonState == HIGH && stage == 2) {
+    buttonState = LOW;
+    stage = 0;
+  }
   
 }
 
@@ -125,13 +129,8 @@ void mazeSolve(void)
          case GO_STRAIGHT: 
             goStraight();
             break;      
-
-         case FINISHED:
-            brake('B', 1);
-            brake('A', 1);
-            status = 1;
-            break;
-        }
+        
+         }
     }
 }
 void goAndTurn(int degrees)
@@ -325,16 +324,6 @@ int readSensors (void)
   RightSensor = distance;
   SonarSensor(trigPin3, echoPin3);
   FrontSensor = distance;
-  if (!(LeftSensor >= (wallDistance - deviation) && LeftSensor <= (wallDistance + deviation)))
-  {
-    if (!(RightSensor >= (wallDistance - deviation) && RightSensor <= (wallDistance + deviation)))
-    {
-      if (!(FrontSensor >= (wallDistance - deviation) && FrontSensor <= (wallDistance + deviation)))
-      {
-        return FINISHED;
-      }
-    }
-  }
   if (LeftSensor >= (wallDistance - deviation) && LeftSensor <= (wallDistance + deviation))
   {
     if (RightSensor >= (wallDistance - deviation) && RightSensor <= (wallDistance + deviation))
