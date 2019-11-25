@@ -7,12 +7,12 @@
 #define GO_STRAIGHT 4
 
 //pins for sensors
-#define trigPin1 A1
+#define trigPin1 A1 // Left
 #define echoPin1 A2
-#define trigPin2 A3
+#define trigPin2 A3 // Center
 #define echoPin2 A4
-#define trigPin3 A5
-#define echoPin3 6
+#define trigPin3 A5 // Right
+#define echoPin3 8
 
 //pins for buttons
 #define buttonPin 1
@@ -48,6 +48,7 @@ long duration, distance, RightSensor,FrontSensor,LeftSensor;
   char path[40] = {'0'};
 
   int buttonState = 0;
+  int stage = 0;
 
 void setup() {
   //Sensors Setup
@@ -78,16 +79,25 @@ void setup() {
 void loop() 
 {
 
+  Serial.print(LeftSensor);
+  Serial.print(" - ");
+  Serial.print(FrontSensor);
+  Serial.print(" - ");
+  Serial.println(RightSensor);
+
   buttonState = digitalRead(buttonPin);
 
-  if (buttonState == LOW) {
+  if (buttonState == HIGH && stage == 0) {
     mazeSolve(); // First pass to solve the maze
     //while (digitalRead(!buttonPin)) { } //just stops it until the you press the button to run the maze again
     pIndex = 0; //reset path index
-  } else {
+    stage += 1;
+  } 
+  if (buttonState == LOW && stage == 1) {
     status = 0; //reset status 
     mazeOptimization(); // Second Pass: run the maze as fast as possible
     status = 1; //set status to finished*/
+    stage += 1;
   }
   
 }
