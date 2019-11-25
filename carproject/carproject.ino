@@ -47,6 +47,8 @@ long duration, distance, RightSensor,FrontSensor,LeftSensor;
   
   char path[40] = {'0'};
 
+  int buttonState = 0;
+
 void setup() {
   //Sensors Setup
   Serial.begin (9600);
@@ -75,13 +77,18 @@ void setup() {
 
 void loop() 
 {
- 
-  mazeSolve(); // First pass to solve the maze
-  //while (digitalRead(!buttonPin)) { } //just stops it until the you press the button to run the maze again
-  pIndex = 0; //reset path index
-  status = 0; //reset status 
-  mazeOptimization(); // Second Pass: run the maze as fast as possible
-  status = 1; //set status to finished*/
+
+  buttonState = digitalRead(buttonPin);
+
+  if (buttonState == LOW) {
+    mazeSolve(); // First pass to solve the maze
+    //while (digitalRead(!buttonPin)) { } //just stops it until the you press the button to run the maze again
+    pIndex = 0; //reset path index
+  } else {
+    status = 0; //reset status 
+    mazeOptimization(); // Second Pass: run the maze as fast as possible
+    status = 1; //set status to finished*/
+  }
   
 }
 
