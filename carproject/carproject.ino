@@ -157,8 +157,8 @@ void goAndTurn(int degrees)
     brake('A', 1);
     brake('A', 0);
     
-    moveMotor('B', CCW, 255);
-    moveMotor('A', CW, 255);
+    moveMotor('B', CW, 255);
+    moveMotor('A', CCW, 255);
     delay(turnLeft);
     brake('B', 1);
     brake('A', 1);
@@ -170,8 +170,8 @@ void goAndTurn(int degrees)
     brake('A', 1);
     brake('A', 0);
     
-    moveMotor('B', CW, 255);
-    moveMotor('A', CCW, 255);
+    moveMotor('B', CCW, 255);
+    moveMotor('A', CW, 255);
     delay(turnBack);
     brake('B', 1);
     brake('A', 1);
@@ -183,8 +183,8 @@ void goAndTurn(int degrees)
     brake('A', 1);
     brake('A', 0);
     
-    moveMotor('B', CCW, 255);
-    moveMotor('A', CW, 255);
+    moveMotor('B', CW, 255);
+    moveMotor('A', CCW, 255);
     delay(turnRight);
     brake('B', 1);
     brake('A', 1);
