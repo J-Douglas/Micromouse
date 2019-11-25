@@ -5,6 +5,7 @@
 #define GO_RIGHT 2
 #define GO_LEFT 3
 #define GO_STRAIGHT 4
+#define FINISHED 5
 
 //pins for sensors
 #define trigPin1 A1
@@ -85,9 +86,9 @@ void loop()
     //while (digitalRead(!buttonPin)) { } //just stops it until the you press the button to run the maze again
     pIndex = 0; //reset path index
   } else {
-    status = 0; //reset status 
-    mazeOptimization(); // Second Pass: run the maze as fast as possible
-    status = 1; //set status to finished*/
+      status = 0; //reset status 
+      mazeOptimization(); // Second Pass: run the maze as fast as possible
+      status = 1; //set status to finished*/
   }
   
 }
@@ -121,8 +122,13 @@ void mazeSolve(void)
          case GO_STRAIGHT: 
             goStraight();
             break;      
-        
-         }
+
+         case FINISHED:
+            brake('B', 1);
+            brake('A', 1);
+            status = 1;
+            break;
+        }
     }
 }
 void goAndTurn(int degrees)
@@ -316,6 +322,16 @@ int readSensors (void)
   RightSensor = distance;
   SonarSensor(trigPin3, echoPin3);
   FrontSensor = distance;
+  if (!(LeftSensor >= (wallDistance - deviation) && LeftSensor <= (wallDistance + deviation)))
+  {
+    if (!(RightSensor >= (wallDistance - deviation) && RightSensor <= (wallDistance + deviation)))
+    {
+      if (!(FrontSensor >= (wallDistance - deviation) && FrontSensor <= (wallDistance + deviation)))
+      {
+        return FINISHED;
+      }
+    }
+  }
   if (LeftSensor >= (wallDistance - deviation) && LeftSensor <= (wallDistance + deviation))
   {
     if (RightSensor >= (wallDistance - deviation) && RightSensor <= (wallDistance + deviation))
