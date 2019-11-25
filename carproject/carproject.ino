@@ -81,14 +81,17 @@ void loop()
 
   buttonState = digitalRead(buttonPin);
 
-  if (buttonState == LOW) {
+  if (buttonState == HIGH && stage == 0) {
     mazeSolve(); // First pass to solve the maze
     //while (digitalRead(!buttonPin)) { } //just stops it until the you press the button to run the maze again
     pIndex = 0; //reset path index
-  } else {
-      status = 0; //reset status 
-      mazeOptimization(); // Second Pass: run the maze as fast as possible
-      status = 1; //set status to finished*/
+    stage += 1;
+  } 
+  if (buttonState == LOW && stage == 1) {
+    status = 0; //reset status 
+    mazeOptimization(); // Second Pass: run the maze as fast as possible
+    status = 1; //set status to finished*/
+    stage += 1;
   }
   
 }
