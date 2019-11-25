@@ -69,6 +69,8 @@ void setup() {
   pinMode(MotorSpeedPinB, OUTPUT);
   pinMode(MotorBrakePinB, OUTPUT);
 
+  pinMode(buttonPin, INPUT);
+
 }
 
 void loop() 
