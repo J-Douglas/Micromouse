@@ -273,7 +273,15 @@ void simplifyPath()
 
 void mazeOptimization (void)
 {
-   
+  for (int i = 0; i < pLength; ++i)
+  {
+    while(readSensors2() == 1)
+    {
+      goStraight;
+    }
+    mazeTurn(path[i]);
+    runExtraInch();
+  }
 }
 //check if path is straight
 int readSensors2(void)
