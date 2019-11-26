@@ -10,10 +10,10 @@
 //pins for sensors
 #define trigPin1 A1 // Left
 #define echoPin1 A2
-#define trigPin2 A3 // Center
-#define echoPin2 A4
-#define trigPin3 A5 // Right
-#define echoPin3 8
+#define trigPin2 A5 // Center
+#define echoPin2 7
+#define trigPin3 A3 // Right
+#define echoPin3 A4
 
 //pins for buttons
 #define buttonPin 1
@@ -106,12 +106,12 @@ void mazeSolve(void)
   unsigned int status = 0; // solving = 0; reach Maze End = 1
     while (!status)
     {
-      Serial.print(LeftSensor);
+        mode = readSensors();  
+              Serial.print(LeftSensor);
             Serial.print(" - ");
             Serial.print(FrontSensor);
             Serial.print(" - ");
             Serial.println(RightSensor);
-        mode = readSensors();  
         switch (mode)
         {   
           case GO_BACK:  
@@ -343,6 +343,7 @@ int readSensors (void)
   LeftSensor = distance;
   SonarSensor(trigPin2, echoPin2);
   RightSensor = distance;
+  
   SonarSensor(trigPin3, echoPin3);
   FrontSensor = distance;
   if (!(LeftSensor >= 0 && LeftSensor <= (wallDistance + deviation)))
@@ -381,12 +382,6 @@ int readSensors (void)
   {
     return GO_LEFT;
   }
-  
-  Serial.print(LeftSensor);
-  Serial.print(" - ");
-  Serial.print(FrontSensor);
-  Serial.print(" - ");
-  Serial.println(RightSensor);
 }
 void SonarSensor(int trigPin,int echoPin)
 {
