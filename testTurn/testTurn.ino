@@ -60,9 +60,9 @@ void loop() {
   brake('A', 1);
   brake('A', 0);
 
-  moveMotor('B', CCW, 80);
-  moveMotor('A', CW, 80);
-  delay(542);
+  moveMotor('B', CCW, 115); // Changing motor speed
+  moveMotor('A', CW, 115); // Changing motor speed
+  delay(550); // Changing delay 
   brake('B', 1);
   brake('A', 1);
   delay(5000);
