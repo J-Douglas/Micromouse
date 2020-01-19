@@ -35,18 +35,18 @@ long duration, distance, RightSensor,FrontSensor,LeftSensor;
 
 //constants
 #define runExtraInchConst 1000
-#define turnLeft 1000
-#define turnRight 1000
-#define turnBack 1000
-
+#define runExtraInchConst2 1000
+#define turnLeft 750
+#define turnRight 750
+#define turnBack 1400
   int pLength = 0;
   int pIndex = 0;
   int mode = 0; 
-  int wallDistance = 20; //distance from wall to robot
+  int wallDistance = 12; //distance from wall to robot
   int deviation = 5;
   int status = 0;
   
-  char path[40] = {'0'};
+  char path[60] = {'0'};
 
   int buttonState = 0;
   int stage = 0;
@@ -79,45 +79,26 @@ void setup() {
 
 void loop() 
 {
-
-//  buttonState = digitalRead(buttonPin);
-
-//  if (buttonState == HIGH && stage == 0) {
     mazeSolve(); // First pass to solve the maze
-    //while (digitalRead(!buttonPin)) { } //just stops it until the you press the button to run the maze again
-    pIndex = 0; //reset path index
-//    stage += 1;
-//  } 
-//  if (buttonState == LOW && stage == 1) {
-    status = 0; //reset status 
-    mazeOptimization(); // Second Pass: run the maze as fast as possible
-    status = 1; //set status to finished*/
-//    stage += 1;
-//  }
-//  if (buttonState == HIGH && stage == 2) {
-//    buttonState = LOW;
-//    stage = 0;
-//  }
-  
 }
-
 void mazeSolve(void)
 {
   unsigned int status = 0; // solving = 0; reach Maze End = 1
     while (!status)
     {
-        mode = readSensors();  
-              Serial.print(LeftSensor);
-            Serial.print(" - ");
-            Serial.print(FrontSensor);
-            Serial.print(" - ");
-            Serial.println(RightSensor);
+        mode = readSensors(); 
+        Serial.print(LeftSensor);
+        Serial.print(" - ");
+        Serial.print(FrontSensor);
+        Serial.print(" - ");
+        Serial.println(RightSensor); 
+        runExtraInch2();
         switch (mode)
         {   
           case GO_BACK:  
             brake('A',1);
             brake('B',1);
-            goAndTurn (90);
+            goAndTurn (180);
             addPath('B');
             break;
             
@@ -140,7 +121,7 @@ void mazeSolve(void)
          case FINISHED:
             brake('B', 1);
             brake('A', 1);
-            status = 1;
+            status = 0;
             break;
         
          }
@@ -157,8 +138,9 @@ void goAndTurn(int degrees)
     brake('A', 1);
     brake('A', 0);
     
-    moveMotor('B', CCW, 255);
+    moveMotor('B', CW, 255);
     moveMotor('A', CW, 255);
+    Serial.print(" left ");
     delay(turnLeft);
     brake('B', 1);
     brake('A', 1);
@@ -170,8 +152,10 @@ void goAndTurn(int degrees)
     brake('A', 1);
     brake('A', 0);
     
-    moveMotor('B', CCW, 255);
+    moveMotor('B', CW, 255);
     moveMotor('A', CW, 255);
+    Serial.print(" backwards ");
+    
     delay(turnBack);
     brake('B', 1);
     brake('A', 1);
@@ -183,8 +167,9 @@ void goAndTurn(int degrees)
     brake('A', 1);
     brake('A', 0);
     
-    moveMotor('B', CW, 255);
+    moveMotor('B', CCW, 255);
     moveMotor('A', CCW, 255);
+    Serial.print(" right ");
     delay(turnRight);
     brake('B', 1);
     brake('A', 1);
@@ -197,27 +182,51 @@ void goStraight(void)
   brake('B', 0);
   brake('A', 1);
   brake('A', 0);
+  moveMotor('B', CW, 255);
+    moveMotor('A', CCW, 255);
+    Serial.print(" straight ");
+    delay(500);
+   /**
   while (readSensors2() == 1)
   {
     moveMotor('B', CW, 255);
-    moveMotor('A', CW, 255);
-    delay(500);
+    moveMotor('A', CCW, 255);
+    delay(1000);
   }
+  */
   brake('B', 1);
   brake('A', 1);
 }
+
 void runExtraInch(void)
 {
+  /**
   brake('B', 1);
   brake('B', 0);
   brake('A', 1);
   brake('A', 0);
   
   moveMotor('B', CW, 255);
-  moveMotor('A', CW, 255);
+  moveMotor('A', CCW, 255);
   delay(runExtraInchConst);
   brake('B', 1);
   brake('A', 1);
+  */
+}
+void runExtraInch2(void)
+{
+  /**
+  brake('B', 1);
+  brake('B', 0);
+  brake('A', 1);
+  brake('A', 0);
+  
+  moveMotor('B', CW, 255);
+  moveMotor('A', CCW, 255);
+  delay(runExtraInchConst2);
+  brake('B', 1);
+  brake('A', 1);
+  */
 }
 
 //telling where to turn
@@ -234,7 +243,7 @@ void mazeTurn (char dir)
        break;   
        
     case 'B': // Turn Back
-       goAndTurn (270);     
+       goAndTurn (180);     
        break;   
        
     case 'S': // Go Straight
@@ -293,7 +302,7 @@ void simplifyPath()
     case 180:
       path[pLength - 3] = 'B';
       break;
-    case 270:
+    case 2255:
       path[pLength - 3] = 'L';
       break;
   }
@@ -343,9 +352,9 @@ int readSensors (void)
   LeftSensor = distance;
   SonarSensor(trigPin2, echoPin2);
   RightSensor = distance;
-  
   SonarSensor(trigPin3, echoPin3);
   FrontSensor = distance;
+  /**
   if (!(LeftSensor >= 0 && LeftSensor <= (wallDistance + deviation)))
   {
     if (!(RightSensor >= 0 && RightSensor <= (wallDistance + deviation)))
@@ -356,6 +365,7 @@ int readSensors (void)
       }
     }
   }
+  */
   if (LeftSensor >= 0 && LeftSensor <= (wallDistance + deviation))
   {
     if (RightSensor >= 0 && RightSensor <= (wallDistance + deviation))
