@@ -3,7 +3,7 @@
 
 We created a fully autonomous, maze-solving robot which we called the **micromouse**. The carcapable of scanning, mapping and traversing through various small mazes. The robot initially runs through the whole maze in order to map out the maze and find a more efficient path to traverse through the maze. To map out the maze, we installed a sensor on the left, front, and right of the robot to determine where there are routes available for the robot to travel. The robot then returns to the start of the maze and runs through it again using the most efficient path.
 
-![Image of Micromouse](https://github.com/J-Douglas/Micromouse/photos/Micromouse.png)
+![Image of Micromouse](https://github.com/J-Douglas/Micromouse/blob/master/photos/Micromouse.png)
 
 ## Components
 
@@ -32,7 +32,7 @@ Listed below are the three types of components we considered while working on th
 
 We designed and 3D printed a chassis that organized the circuitry to allow for easy reassembly. As well, one design tradeoff we made was to use two wheels and have the back of the robot trailing on the floor. Below is a schematic of the robot and diagram of the circuitry. 
 
-![Image of Schematic](https://github.com/J-Douglas/Micromouse/photos/MicromouseSchematic.png)
+![Image of Schematic](https://github.com/J-Douglas/Micromouse/blob/master/photos/MicromouseSchematic.png)
 
 ## Algorithm
 
