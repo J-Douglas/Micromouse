@@ -35,7 +35,7 @@ Listed below are the three types of components we considered while working on th
 We designed and 3D printed a chassis that organized the circuitry to allow for easy reassembly. As well, one design tradeoff we made was to use two wheels and have the back of the robot trailing on the floor. Below is a schematic of the robot and diagram of the circuitry. 
 
 <p align="center">
-  <img src:"https://github.com/J-Douglas/Micromouse/blob/master/photos/MicromouseSchematic.png">
+  <img src="https://github.com/J-Douglas/Micromouse/blob/master/photos/MicromouseSchematic.png">
 </p>
 
 ## Algorithm
